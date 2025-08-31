@@ -2,7 +2,7 @@ class CountdownTimer {
     constructor() {
         this.minutes = 5;
         this.seconds = 0;
-        this.totalSeconds = 0;
+        this.timeLeft = 300; // 5 minutes in seconds
         this.isRunning = false;
         this.intervalId = null;
         this.currentSection = 'minutes'; // 'minutes' or 'seconds'
@@ -12,6 +12,7 @@ class CountdownTimer {
         this.initializeEventListeners();
         this.updateDisplay();
         this.loadTheme();
+        this.loadStyle();
     }
     
     initializeElements() {
@@ -19,6 +20,7 @@ class CountdownTimer {
         this.secondsElement = document.getElementById('seconds');
         this.statusElement = document.getElementById('statusText');
         this.themeToggle = document.getElementById('themeToggle');
+        this.styleToggle = document.getElementById('styleToggle');
         this.chimeSound = document.getElementById('chimeSound');
         this.minutesSection = document.querySelector('.minutes-section');
         this.secondsSection = document.querySelector('.seconds-section');
@@ -27,17 +29,19 @@ class CountdownTimer {
     
     initializeEventListeners() {
         // Keyboard events
-        document.addEventListener('keydown', (e) => this.handleKeyPress(e));
+        document.addEventListener('keydown', (e) => {
+            // Prevent default behavior for specific keys
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
+                e.preventDefault();
+            }
+            this.handleKeyPress(e);
+        });
         
         // Theme toggle
         this.themeToggle.addEventListener('click', () => this.toggleTheme());
         
-        // Prevent default behavior for arrow keys
-        document.addEventListener('keydown', (e) => {
-            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
-                e.preventDefault();
-            }
-        });
+        // Style toggle
+        this.styleToggle.addEventListener('click', () => this.toggleStyle());
     }
     
     handleKeyPress(e) {
@@ -73,6 +77,8 @@ class CountdownTimer {
         } else {
             this.seconds = Math.max(0, Math.min(59, this.seconds + delta));
         }
+        // Update timeLeft to match minutes and seconds
+        this.timeLeft = this.minutes * 60 + this.seconds;
         this.updateDisplay();
     }
     
@@ -95,30 +101,30 @@ class CountdownTimer {
     }
     
     startTimer() {
-        if (this.minutes === 0 && this.seconds === 0) {
+        if (this.timeLeft <= 0) {
             return;
         }
         
         this.isRunning = true;
-        this.totalSeconds = this.minutes * 60 + this.seconds;
         document.body.classList.add('running');
         this.statusElement.textContent = 'Running';
         
         this.intervalId = setInterval(() => {
-            this.totalSeconds--;
+            this.timeLeft--;
             
-            if (this.totalSeconds <= 0) {
+            if (this.timeLeft <= 0) {
                 this.timerComplete();
                 return;
             }
             
             // Check for last 5 seconds
-            if (this.totalSeconds <= 5 && !this.isBlinking) {
+            if (this.timeLeft <= 5 && !this.isBlinking) {
                 this.startBlinking();
             }
             
-            this.minutes = Math.floor(this.totalSeconds / 60);
-            this.seconds = this.totalSeconds % 60;
+            // Update minutes and seconds for display consistency
+            this.minutes = Math.floor(this.timeLeft / 60);
+            this.seconds = this.timeLeft % 60;
             this.updateDisplay();
         }, 1000);
     }
@@ -136,7 +142,7 @@ class CountdownTimer {
         clearInterval(this.intervalId);
         this.minutes = 5;
         this.seconds = 0;
-        this.totalSeconds = 0;
+        this.timeLeft = 300; // 5 minutes in seconds
         document.body.classList.remove('running');
         this.statusElement.textContent = 'Ready';
         this.stopBlinking();
@@ -174,43 +180,67 @@ class CountdownTimer {
         try {
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
             
-            // Create authentic airplane cabin chime with two-tone ding-dong pattern
-            const duration = 2.5;
+            // Create authentic Airbus cabin chime with bass frequencies
+            const duration = 3.0;
             const sampleRate = audioContext.sampleRate;
             const buffer = audioContext.createBuffer(1, duration * sampleRate, sampleRate);
             const data = buffer.getChannelData(0);
             
-            // Generate airplane cabin chime: high tone followed by lower tone
+            // Generate Airbus cabin chime: distinctive two-tone with bass
             for (let i = 0; i < buffer.length; i++) {
                 const t = i / sampleRate;
                 let sample = 0;
                 
-                // First chime (high tone) - 0 to 0.8 seconds
-                if (t < 0.8) {
-                    const envelope1 = Math.exp(-t * 3) * (1 - Math.exp(-t * 20));
+                // Bass foundation - continuous low frequency
+                if (t < 2.5) {
+                    const bassEnvelope = Math.exp(-t * 1.5) * (1 - Math.exp(-t * 10));
+                    const bassFreq = 130.81; // C3 - bass note
+                    const bass = Math.sin(2 * Math.PI * bassFreq * t) * bassEnvelope * 0.3;
+                    sample += bass;
+                }
+                
+                // First chime (high tone) - 0 to 1.0 seconds
+                if (t < 1.0) {
+                    const envelope1 = Math.exp(-t * 2.5) * (1 - Math.exp(-t * 15));
                     const freq1 = 1046.5; // C6 - high tone
                     const harmonic1 = Math.sin(2 * Math.PI * freq1 * t);
-                    const harmonic2 = Math.sin(2 * Math.PI * freq1 * 2 * t) * 0.3;
-                    const harmonic3 = Math.sin(2 * Math.PI * freq1 * 3 * t) * 0.1;
-                    sample += (harmonic1 + harmonic2 + harmonic3) * envelope1 * 0.4;
+                    const harmonic2 = Math.sin(2 * Math.PI * freq1 * 2 * t) * 0.4;
+                    const harmonic3 = Math.sin(2 * Math.PI * freq1 * 3 * t) * 0.2;
+                    sample += (harmonic1 + harmonic2 + harmonic3) * envelope1 * 0.5;
                 }
                 
-                // Second chime (lower tone) - 0.3 to 2.0 seconds
-                if (t > 0.3 && t < 2.0) {
-                    const t2 = t - 0.3;
-                    const envelope2 = Math.exp(-t2 * 2.5) * (1 - Math.exp(-t2 * 15));
+                // Second chime (lower tone) - 0.4 to 2.2 seconds
+                if (t > 0.4 && t < 2.2) {
+                    const t2 = t - 0.4;
+                    const envelope2 = Math.exp(-t2 * 2.0) * (1 - Math.exp(-t2 * 12));
                     const freq2 = 783.99; // G5 - lower tone
                     const harmonic1 = Math.sin(2 * Math.PI * freq2 * t);
-                    const harmonic2 = Math.sin(2 * Math.PI * freq2 * 2 * t) * 0.3;
-                    const harmonic3 = Math.sin(2 * Math.PI * freq2 * 3 * t) * 0.1;
-                    sample += (harmonic1 + harmonic2 + harmonic3) * envelope2 * 0.4;
+                    const harmonic2 = Math.sin(2 * Math.PI * freq2 * 2 * t) * 0.4;
+                    const harmonic3 = Math.sin(2 * Math.PI * freq2 * 3 * t) * 0.2;
+                    sample += (harmonic1 + harmonic2 + harmonic3) * envelope2 * 0.5;
                 }
                 
-                // Add subtle reverb effect
-                if (t > 0.1) {
-                    const delayIndex = Math.floor((t - 0.1) * sampleRate);
+                // Mid-range warmth
+                if (t < 2.0) {
+                    const midEnvelope = Math.exp(-t * 2.2) * (1 - Math.exp(-t * 8));
+                    const midFreq = 261.63; // C4 - mid tone
+                    const mid = Math.sin(2 * Math.PI * midFreq * t) * midEnvelope * 0.2;
+                    sample += mid;
+                }
+                
+                // Add reverb effect
+                if (t > 0.15) {
+                    const delayIndex = Math.floor((t - 0.15) * sampleRate);
                     if (delayIndex < data.length && delayIndex >= 0) {
-                        sample += data[delayIndex] * 0.15;
+                        sample += data[delayIndex] * 0.2;
+                    }
+                }
+                
+                // Add second reverb for depth
+                if (t > 0.3) {
+                    const delayIndex2 = Math.floor((t - 0.3) * sampleRate);
+                    if (delayIndex2 < data.length && delayIndex2 >= 0) {
+                        sample += data[delayIndex2] * 0.1;
                     }
                 }
                 
@@ -234,8 +264,30 @@ class CountdownTimer {
     }
     
     updateDisplay() {
-        this.minutesElement.textContent = this.minutes.toString().padStart(2, '0');
-        this.secondsElement.textContent = this.seconds.toString().padStart(2, '0');
+        const minutes = Math.floor(this.timeLeft / 60);
+        const seconds = this.timeLeft % 60;
+        
+        const newMinutes = minutes.toString().padStart(2, '0');
+        const newSeconds = seconds.toString().padStart(2, '0');
+        
+        // Trigger flip animation if value changed and in retro mode
+        const isRetro = document.documentElement.getAttribute('data-style') === 'retro';
+        
+        if (isRetro) {
+            if (this.minutesElement.textContent !== newMinutes) {
+                this.triggerFlipAnimation(this.minutesElement, newMinutes);
+            }
+            if (this.secondsElement.textContent !== newSeconds) {
+                this.triggerFlipAnimation(this.secondsElement, newSeconds);
+            }
+        } else {
+            this.minutesElement.textContent = newMinutes;
+            this.secondsElement.textContent = newSeconds;
+        }
+        
+        // Set data attributes for flip effect
+        this.minutesElement.setAttribute('data-value', newMinutes);
+        this.secondsElement.setAttribute('data-value', newSeconds);
         this.updateActiveSection();
     }
     
@@ -250,10 +302,39 @@ class CountdownTimer {
         localStorage.setItem('theme', newTheme);
     }
     
+    toggleStyle() {
+        const currentStyle = document.documentElement.getAttribute('data-style');
+        const newStyle = currentStyle === 'retro' ? 'default' : 'retro';
+        
+        document.documentElement.setAttribute('data-style', newStyle);
+        this.styleToggle.querySelector('.style-label').textContent = newStyle === 'retro' ? 'Retro' : 'Default';
+        
+        // Save style preference
+        localStorage.setItem('style', newStyle);
+    }
+    
     loadTheme() {
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
         this.themeToggle.querySelector('.theme-icon').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+    }
+    
+    triggerFlipAnimation(element, newValue) {
+        element.classList.add('flipping');
+        
+        setTimeout(() => {
+            element.textContent = newValue;
+        }, 300); // Half way through the animation
+        
+        setTimeout(() => {
+            element.classList.remove('flipping');
+        }, 600); // Full animation duration
+    }
+    
+    loadStyle() {
+        const savedStyle = localStorage.getItem('style') || 'default';
+        document.documentElement.setAttribute('data-style', savedStyle);
+        this.styleToggle.querySelector('.style-label').textContent = savedStyle === 'retro' ? 'Retro' : 'Default';
     }
 }
 

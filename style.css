@@ -48,35 +48,44 @@ body {
     justify-content: center;
 }
 
-.theme-toggle {
+.controls-header {
     position: absolute;
     top: 2rem;
     right: 2rem;
     z-index: 100;
+    display: flex;
+    gap: 1rem;
 }
 
-.theme-btn {
+.control-btn {
     background: var(--active-bg);
     border: 2px solid var(--border-color);
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
+    border-radius: 15px;
+    padding: 0.8rem 1.2rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
     box-shadow: 0 4px 12px var(--shadow-color);
+    color: var(--text-color);
+    font-weight: 600;
+    min-width: 80px;
 }
 
-.theme-btn:hover {
-    transform: scale(1.1);
+.control-btn:hover {
+    transform: scale(1.05);
     box-shadow: 0 6px 20px var(--shadow-color);
 }
 
 .theme-icon {
     font-size: 1.5rem;
     transition: transform 0.3s ease;
+}
+
+.style-label {
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
 }
 
 .timer-container {
@@ -108,7 +117,7 @@ body {
 }
 
 .time-value {
-    font-size: 8rem;
+    font-size: 12rem;
     font-weight: 200;
     line-height: 1;
     color: var(--text-color);
@@ -129,7 +138,7 @@ body {
 }
 
 .separator {
-    font-size: 6rem;
+    font-size: 8rem;
     font-weight: 200;
     color: var(--secondary-color);
     margin: 0 1rem;
@@ -244,5 +253,123 @@ body {
     .time-section {
         min-width: 150px;
         padding: 1.5rem;
+    }
+}
+
+/* NBA Scoreboard Flip Clock Style */
+[data-style="retro"] {
+    background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+    color: #ffffff;
+}
+
+[data-style="retro"] .time-section {
+    perspective: 1000px;
+}
+
+[data-style="retro"] .time-value {
+    font-family: 'Arial Black', Arial, sans-serif;
+    font-weight: 900;
+    color: #ffffff;
+    background: #2a2a2a;
+    border: 3px solid #333333;
+    border-radius: 12px;
+    box-shadow: 
+        0 8px 16px rgba(0, 0, 0, 0.4),
+        inset 0 2px 4px rgba(255, 255, 255, 0.1),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+    padding: 1rem 2rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+[data-style="retro"] .time-value::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #333333, transparent);
+    z-index: 1;
+    transform: translateY(-50%);
+}
+
+/* Removed problematic ::after pseudo-element that caused blur */
+
+[data-style="retro"] .time-value.flipping {
+    animation: flipCard 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+[data-style="retro"] .time-label {
+    color: #cccccc;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+[data-style="retro"] .separator {
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    font-weight: bold;
+}
+
+[data-style="retro"] .time-section.active {
+    background: transparent;
+    /* Removed border and box-shadow to eliminate outer rectangle */
+}
+
+[data-style="retro"] .running .time-section.active .time-value {
+    /* No glow animation - clean flip clock style */
+}
+
+[data-style="retro"] .controls-info {
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid #444444;
+    border-radius: 12px;
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.3),
+        inset 0 1px 2px rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+}
+
+[data-style="retro"] .key {
+    background: linear-gradient(180deg, #4a4a4a, #2a2a2a);
+    color: #ffffff;
+    border: 2px solid #666666;
+    border-radius: 6px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    box-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.3),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2);
+    font-weight: bold;
+}
+
+[data-style="retro"] .key:hover {
+    background: linear-gradient(180deg, #5a5a5a, #3a3a3a);
+    transform: translateY(1px);
+}
+
+[data-style="retro"] .description {
+    color: #cccccc;
+    font-family: 'Courier New', monospace;
+}
+
+[data-style="retro"] .status-indicator {
+    color: #ffffff;
+    font-family: 'Courier New', monospace;
+    text-shadow: none;
+}
+
+@keyframes flipCard {
+    0% {
+        transform: rotateX(0deg);
+    }
+    50% {
+        transform: rotateX(-90deg);
+    }
+    100% {
+        transform: rotateX(0deg);
     }
 }

@@ -29,6 +29,12 @@ A clean, modern countdown timer web application with keyboard controls, sound ef
 - Touch-friendly interface
 - Optimized for all screen sizes
 
+🤠 ** Retro Style **
+- Retro-style timer display
+- Classic flip clock effect
+- Retro theme with classic colors
+- Retro-style controls
+
 ## Usage
 
 1. **Setting Time**: Use ↑↓ arrow keys to increase/decrease the selected time unit
