@@ -2,6 +2,9 @@
 
 A clean, modern countdown timer web application with keyboard controls, sound effects, and theme switching capabilities. Inspired by [Full-screen timer](https://github.com/alphakevin/fullscreen-timer).
 
+![Preview](https://github.com/bphw/clean-fullscreen-timer/blob/main/preview.png)
+![Blink](https://github.com/bphw/clean-fullscreen-timer/blob/main/blink.png)
+
 ## Features
 
 ✨ **Minimal Keyboard Interface**
@@ -29,7 +32,7 @@ A clean, modern countdown timer web application with keyboard controls, sound ef
 - Touch-friendly interface
 - Optimized for all screen sizes
 
-🤠 ** Retro Style **
+🤠 **Retro Style**
 - Retro-style timer display
 - Classic flip clock effect
 - Retro theme with classic colors
