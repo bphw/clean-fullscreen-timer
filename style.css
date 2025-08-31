@@ -1,0 +1,248 @@
+/* CSS Variables for themes */
+:root {
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --accent-color: #007bff;
+    --secondary-color: #6c757d;
+    --border-color: #e9ecef;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --active-bg: #f8f9fa;
+}
+
+[data-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --text-color: #ffffff;
+    --accent-color: #4dabf7;
+    --secondary-color: #adb5bd;
+    --border-color: #343a40;
+    --shadow-color: rgba(255, 255, 255, 0.1);
+    --active-bg: #2d3748;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    overflow: hidden;
+}
+
+.container {
+    text-align: center;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    z-index: 100;
+}
+
+.theme-btn {
+    background: var(--active-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.theme-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px var(--shadow-color);
+}
+
+.theme-icon {
+    font-size: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.timer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+}
+
+.timer-display {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    font-weight: 300;
+    user-select: none;
+}
+
+.time-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    min-width: 200px;
+}
+
+.time-section.active {
+    transform: scale(1.05);
+}
+
+.time-value {
+    font-size: 8rem;
+    font-weight: 200;
+    line-height: 1;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    text-shadow: 0 4px 20px var(--shadow-color);
+}
+
+.time-section.active .time-value {
+    text-shadow: 0 8px 32px var(--shadow-color), 0 0 20px var(--accent-color);
+}
+
+.time-label {
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+    margin-top: 0.5rem;
+    font-weight: 500;
+    letter-spacing: 2px;
+}
+
+.separator {
+    font-size: 6rem;
+    font-weight: 200;
+    color: var(--secondary-color);
+    margin: 0 1rem;
+}
+
+.controls-info {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.controls-info:hover {
+    opacity: 1;
+}
+
+.control-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.key {
+    color: var(--accent-color);
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    min-width: 60px;
+    text-shadow: 0 2px 4px var(--shadow-color);
+    border: 2px solid var(--accent-color);
+    border-radius: 8px;
+    background: transparent;
+}
+
+.description {
+    font-size: 0.8rem;
+    color: var(--secondary-color);
+    font-weight: 500;
+}
+
+.status-indicator {
+    position: absolute;
+    bottom: 2rem;
+    font-size: 1.1rem;
+    color: var(--secondary-color);
+    font-weight: 500;
+}
+
+/* Blinking animation for last 5 seconds */
+.blink {
+    animation: blink 0.5s infinite;
+}
+
+@keyframes blink {
+    0%, 50% {
+        background-color: var(--bg-color);
+    }
+    51%, 100% {
+        background-color: #ff4757;
+    }
+}
+
+/* Running state styles */
+.running .time-section.active .time-value {
+    color: var(--accent-color);
+    text-shadow: 0 0 30px var(--accent-color), 0 8px 32px var(--shadow-color);
+}
+
+.running .time-section.active .time-label {
+    color: var(--accent-color);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .timer-display {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .time-value {
+        font-size: 6rem;
+    }
+    
+    .separator {
+        font-size: 4rem;
+        transform: rotate(90deg);
+    }
+    
+    .controls-info {
+        gap: 1rem;
+    }
+    
+    .theme-toggle {
+        top: 1rem;
+        right: 1rem;
+    }
+    
+    .theme-btn {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+@media (max-width: 480px) {
+    .time-value {
+        font-size: 4rem;
+    }
+    
+    .time-section {
+        min-width: 150px;
+        padding: 1.5rem;
+    }
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="theme-toggle">
+            <button id="themeToggle" class="theme-btn" aria-label="Toggle theme">
+                <span class="theme-icon">🌙</span>
+            </button>
+        </div>
+        
+        <div class="timer-container">
+            <div class="timer-display">
+                <div class="time-section minutes-section active">
+                    <span class="time-value" id="minutes">05</span>
+                    <span class="time-label">MIN</span>
+                </div>
+                <div class="separator">:</div>
+                <div class="time-section seconds-section">
+                    <span class="time-value" id="seconds">00</span>
+                    <span class="time-label">SEC</span>
+                </div>
+            </div>
+            
+            <div class="controls-info">
+                <div class="control-item">
+                    <span class="key">↑↓</span>
+                    <span class="description">Adjust time</span>
+                </div>
+                <div class="control-item">
+                    <span class="key">←→</span>
+                    <span class="description">Switch min/sec</span>
+                </div>
+                <div class="control-item">
+                    <span class="key">SPACE</span>
+                    <span class="description">Start/Stop</span>
+                </div>
+                <div class="control-item">
+                    <span class="key">R</span>
+                    <span class="description">Reset</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="status-indicator">
+            <span id="statusText">Ready</span>
+        </div>
+    </div>
+    
+    <audio id="chimeSound" preload="auto">
+        <source src="chime.mp3" type="audio/mpeg">
+        <source src="chime.wav" type="audio/wav">
+    </audio>
+    
+    <script src="script.js"></script>
+</body>
+</html>
